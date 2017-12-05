@@ -296,10 +296,12 @@ int main(int argc, char * argv[])
         char * token = strtok (buffer,"\n");
         while(token)   {
             char * p_val = strchr(token, '/');
-            token[p_val-token] = 0;
-            strcpy(thread_end_node_ip_addrs.ip_addr[thread_end_node_ip_addrs.ip_addr_count],++token);
+            if(p_val)   {
+                token[p_val-token] = 0;
+                strcpy(thread_end_node_ip_addrs.ip_addr[thread_end_node_ip_addrs.ip_addr_count],++token);
+                thread_end_node_ip_addrs.ip_addr_count++;
+            }
             token = strtok (NULL,"\n");
-            thread_end_node_ip_addrs.ip_addr_count++;
         }
 
         sleep(1);
@@ -349,9 +351,11 @@ int main(int argc, char * argv[])
             token = strtok (buffer,"\n");
             while(token)   {
                 char * p_val = strchr(token, '=');
-                thread_diag_data[index] = ++p_val;
+                if(p_val)   {
+                    thread_diag_data[index] = ++p_val;
+                    index++;
+                }
                 token = strtok (NULL,"\n");
-                index++;
             }
 
             if(!strcmp(thread_br_addr_str, thread_end_node_ip_addrs.ip_addr[thread_end_node_ip_addrs.ip_addr_count]))   {
