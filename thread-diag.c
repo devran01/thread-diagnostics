@@ -163,7 +163,7 @@ end:
 
 static void sighandler(int signal)
 {
-	syslog(LOG_ERR, "singal handler called with SIGTERM signal");
+	syslog(LOG_ERR, "singal handler called with %d signal", signal);
     thread_diag_forever = 1;
 }
 
@@ -233,7 +233,7 @@ int main(int argc, char * argv[])
         return 2;
     }
 
-    struct timeval udp6_socket_timeout={10,0};
+    struct timeval udp6_socket_timeout={20,0};
     if(setsockopt(udp6_socket,SOL_SOCKET,SO_RCVTIMEO,(void *)&udp6_socket_timeout,sizeof(udp6_socket_timeout)) < 0)    {
         syslog(LOG_ERR, "Unable to set timeout on socket: %s", strerror(errno));
         return 2;
@@ -286,7 +286,7 @@ int main(int argc, char * argv[])
 
         char buffer[1480];
         if (recvfrom(udp6_socket, buffer, 1480, 0,
-                0, 0) < 0) {
+                0, 0) <= 0) {
             syslog(LOG_ERR, "Unable to get thread route command output from the border router: %s", strerror(errno));
             sleep(thread_diag_interval);
             continue;
@@ -341,7 +341,7 @@ int main(int argc, char * argv[])
             free(payload);
 
             if (recvfrom(udp6_socket, buffer, 1480, 0,
-                    0, 0) < 0) {
+                    0, 0) <= 0) {
                 syslog(LOG_ERR, "Unable to receive thread diag output from %s, %s\n", thread_end_node_ip_addrs.ip_addr[thread_end_node_ip_addrs.ip_addr_count], strerror(errno));
                 continue;
             }
